@@ -18,7 +18,7 @@ app.use(cookieParser());  // to setup and manage cookies
 
 db()
 
-app.use("/api/v1/user",userRoute)
+app.use("/api/v1/users",userRoute)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

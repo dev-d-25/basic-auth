@@ -149,13 +149,13 @@ const login = async (req, res) => {
       });
     } else {
       // await bcrypt.compare("user enterd pass", db stored pass); // true
-      console.log(user.email,user.password);
-      console.log(password)
+      console.log(user.email, user.password);
+      console.log(password);
       const isMatch = await bcrypt.compare(password, user.password); // true
       console.log(isMatch);
-      
+
       if (!isMatch) {
-          return res.status(400).json({
+        return res.status(400).json({
           // error: error.message,
           message: "Password is Incorrect",
           success: false,
@@ -169,7 +169,7 @@ const login = async (req, res) => {
         }
       );
       console.log(token);
-      
+
       let cookieOptions = {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true, // The cookie only accessible by the web server
@@ -183,10 +183,10 @@ const login = async (req, res) => {
         message: "Login Succesfull",
         success: "true",
         token,
-        userinfo : {
-          "id" : user._id,
-          "email" : user.email
-        }
+        userinfo: {
+          id: user._id,
+          email: user.email,
+        },
       });
     }
   } catch (error) {
@@ -198,4 +198,22 @@ const login = async (req, res) => {
   }
 };
 
-export { registerUser, verifyUser, login };
+const getMe = async (req, res) => {
+  const userInfo = await User.findById(req.user.id).select("-password");
+  console.log(userInfo);
+  if (!userInfo) {
+    return res.status(400).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  try {
+    res.status(200).json({
+      success: true,
+      user: userInfo,
+    });
+  } catch (error) {
+    console.log("Error in get me", error);
+  }
+};
+export { registerUser, verifyUser, login, getMe };
